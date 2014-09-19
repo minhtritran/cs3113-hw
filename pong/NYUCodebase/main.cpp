@@ -4,17 +4,18 @@ SDL_Window* displayWindow;
 
 Entity ball;
 Entity paddle1;
+Entity paddle2;
 
 using namespace std;
 
-GLuint LoadTexture(const char *image_path) {
+GLuint LoadTexture(const char *image_path, GLuint format) {
 	SDL_Surface *surface = IMG_Load(image_path);
 
 	GLuint textureID;
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, 4, surface->w, surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, surface->w, surface->h, 0, format, GL_UNSIGNED_BYTE, surface->pixels);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -45,23 +46,23 @@ bool ProcessEvents() {
 	const Uint8 *keys = SDL_GetKeyboardState(NULL);
 
 	if (keys[SDL_SCANCODE_UP]) {
-		paddle1.directionY = 1.0;
+		paddle1.direction_y = 1.0;
 	}
 	else if (keys[SDL_SCANCODE_DOWN]) {
-		paddle1.directionY = -1.0;
+		paddle1.direction_y = -1.0;
 	}
 	return true;
 }
 
 void Update(float elapsed) {
-	//paddle1.y += paddle1.directionY * elapsed;
+	paddle1.y += paddle1.direction_y * elapsed;
 }
 
 void Render() {
 	glClearColor(0.4f, 0.2f, 0.4f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	ball.Draw();
+	paddle1.Draw();
 
 	SDL_GL_SwapWindow(displayWindow);
 }
@@ -78,10 +79,10 @@ int main(int argc, char *argv[]) {
 
 	float lastFrameTicks = 0.0f;
 
-	ball.textureID = LoadTexture("ballGrey.png", GL_BGRA);
-	ball.SetSize = (0.1, 0.1);
+	paddle1.textureID = LoadTexture("emoji.png", GL_RGBA);
+	paddle1.SetSize(0.1, 0.1);
 
-	while (!ProcessEvents()) {
+	while (ProcessEvents()) {
 
 		float ticks = (float)SDL_GetTicks()/1000.0f;
 		float elapsed = ticks - lastFrameTicks;
@@ -91,6 +92,8 @@ int main(int argc, char *argv[]) {
 
 		Render();
 	}
+
+	Cleanup();
 
 	SDL_Quit();
 	return 0;

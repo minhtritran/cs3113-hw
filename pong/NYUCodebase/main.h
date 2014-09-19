@@ -7,7 +7,10 @@
 
 class Entity {
 public:
-
+	void SetSize(float widthGiven, float heightGiven) {
+		width = widthGiven;
+		height = heightGiven;
+	}
 	void Draw() {
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, textureID);
@@ -37,7 +40,7 @@ public:
 	float y;
 	float rotation;
 
-	int textureID;
+	GLuint textureID;
 
 	float width;
 	float height;

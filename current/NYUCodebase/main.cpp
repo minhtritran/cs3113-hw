@@ -30,84 +30,45 @@ GLuint LoadTexture(const char *image_path) {
 	return textureID;
 }
 
-void DrawSprite(GLint texture, float x, float y, float rotation) {
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, texture);
+class SheetSprite {
+	public:
+		SheetSprite();
+		SheetSprite(unsigned int textureID, float u, float v, float width, float height);
 
-	glMatrixMode(GL_MODELVIEW);
+		void Draw(float scale);
 
-	glLoadIdentity();
-	glTranslatef(x, y, 0.0);
-	glRotatef(rotation, 0.0, 0.0, 1.0);
+		unsigned int textureID;
+		float u;
+		float v;
+		float width;
+		float height;
+};
 
-	GLfloat quad[] = { -0.1f, 0.1f, -0.1f, -0.1f, 0.1f, -0.1f, 0.1f, 0.1f };
-	glVertexPointer(2, GL_FLOAT, 0, quad);
-	glEnableClientState(GL_VERTEX_ARRAY);
-
-	GLfloat quadUVs[] = { 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0 };
-	glTexCoordPointer(2, GL_FLOAT, 0, quadUVs);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	glDrawArrays(GL_QUADS, 0, 4);
-	glDisable(GL_TEXTURE_2D);
+SheetSprite::SheetSprite() {
 }
 
-void DrawBg();
+SheetSprite::SheetSprite(unsigned int textureID, float u, float v, float width, float height)
+	: textureID(textureID), u(u), v(v), width(width), height(height) {}
 
-//This can be a sprite class, so that we only need to pass in the index
-void DrawSpritesheetSprite(int spriteTexture, int index, int spriteCountX, int spriteCountY) {
-	float u = (float)(((int)index) % spriteCountX) / (float)spriteCountX;
-	float v = (float)(((int)index) / spriteCountX) / (float)spriteCountY;
-	float spriteWidth = ;	//missing stuff
-	float spriteHeight = ;	//missing stuff
+void SheetSprite::Draw(float scale) {
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, textureID);
 
-	GLfloat quad[] = { -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f, 0.5f, 0.5f};
+	GLfloat quad[] = { scale*-width, scale*height, scale*-width, scale*-height, scale*width, scale*-height, scale*width, scale*height };
 	glVertexPointer(2, GL_FLOAT, 0, quad);
 	glEnableClientState(GL_VERTEX_ARRAY);
 
-	GLfloat uvs[] = {u, v, u, v+spriteHeight, u+spriteWidth, v+spriteHeight, u+spriteWidth, v};
+	GLfloat uvs[] = { u, v, u, v + height, u + width, v + height, u + width, v };
 	glTexCoordPointer(2, GL_FLOAT, 0, uvs);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glDisableClientState(GL_COLOR_ARRAY);
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	glDrawArrays(GL_QUADS, 0, 4);
-}
-
-void DrawText(unsigned int spriteTexture, string text, float size, float spacing, float r, float g, float b, float a) {
 	
-	vector<float> vertexData;
-	vector<float> uvData;
-	vector<float> colorData;
-
-	float spriteWidth = 1.0f / 16.0f;
-	float spriteHeight = 1.0f / 16.0f;
-
-	for (int i = 0; i < text.size(); i++) {
-		float u = (float)((int)text[i] % 16) / 16.0f;
-		float v = (float)((int)text[i] / 16) / 16.0f;
-
-		vertexData.insert(vertexData.end(), { ((size + spacing) * i) + (-0.5f * size), 0.5f * size,
-												((size+spacing) * i) + (-0.5f * size), -0.5f * size,
-												((size + spacing) * i) + (0.5f * size), -0.5f * size,
-												((size + spacing) * i) + (0.5f * size), 0.5f * size,
-											});
-		
-		colorData.insert(colorData.end(), {r,g,b,a, r,g,b,a, r,g,b,a, r,g,b,a});
-		
-		uvData.insert(uvData.end(), { u, v, u, v + spriteHeight, u + spriteWidth, v + spriteHeight, u + spriteWidth, v });
-	}
-
-	glVertexPointer(2, GL_FLOAT, 0, vertexData.data());
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glTexCoordPointer(2, GL_FLOAT, 0, uvData.data());
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glColorPointer(4, GL_FLOAT, 0, colorData.data());
-	glEnableClientState(GL_COLOR_ARRAY);
-	glDrawArrays(GL_QUADS, 0, 4);	//This is wrong
 }
 
 int main(int argc, char *argv[])
@@ -121,24 +82,17 @@ int main(int argc, char *argv[])
 	
 	SDL_Event event;
 
+	unsigned int spriteSheetTexture = LoadTexture("sheet.png");
+
+	//name="enemyBlue1.png" x="425" y="468" width="93" height="84" />
+
+	SheetSprite mySprite = SheetSprite(spriteSheetTexture, 425.0f/1024.0f, 468.0f/1024.0f, 93.0f/1024.0f, 84.0f/1024.0f);
+
 	glViewport(0,0,800,600);
 	glMatrixMode(GL_PROJECTION);
 	glOrtho(-1.33, 1.33, -1.0, 1.0, -1.0, 1.0);
 
-	int spriteTexture = LoadTexture("characters_3.png");
-	int fontTexture = LoadTexture("font1.png");
-
-	//This can be an animation class
-	const int runAnimation[] = {9, 10, 11, 12, 13};
-	const int numFrames = 5;
-	float animationElapsed = 0.0f;
-	float framesPerSecond = 30.0f;
-	unsigned int currentIndex = 0;
-
 	float lastFrameTicks = 0.0f;
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	while (!done) {
 		while (SDL_PollEvent(&event)) {
@@ -153,23 +107,6 @@ int main(int argc, char *argv[])
 
 		glClearColor(0.4f, 0.2f, 0.4f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-
-		animationElapsed += elapsed;
-		
-		if (animationElapsed > 1.0 / framesPerSecond) {
-			currentIndex++;
-			animationElapsed = 0.0f;
-
-			if (currentIndex > numFrames - 1) {
-				currentIndex = 0;
-			}
-		}
-
-		DrawSpritesheetSprite(spriteTexture, runAnimation[currentIndex], 8, 4);
-
-		glTranslatef(-0.5, 0.0, 0.0);
-
-		DrawText(fontTexture, "Hello, World!", 0.1, -0.02, 1.0, 0.0, 0.0, 1.0);
 
 		SDL_GL_SwapWindow(displayWindow);
 	}

@@ -1,9 +1,29 @@
-﻿Build started 9/30/2014 12:32:20 PM.
-     1>Project "C:\cs3113-hw\HW3 (space invaders)\NYUCodebase\NYUCodebase.vcxproj" on node 2 (Build target(s)).
-     1>Link:
-         NYUCodebase.vcxproj -> C:\cs3113-hw\HW3 (space invaders)\Debug\NYUCodebase.exe
-     1>Done Building Project "C:\cs3113-hw\HW3 (space invaders)\NYUCodebase\NYUCodebase.vcxproj" (Build target(s)).
+﻿Build started 10/4/2014 10:38:26 PM.
+     1>Project "E:\Git Repositories\cs3113-hw\HW3 (space invaders)\NYUCodebase\NYUCodebase.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IC:\SDL2\include /IC:\SDL2_image\include /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Entity.cpp SpaceInvaders.cpp
+         SpaceInvaders.cpp
+     1>e:\git repositories\cs3113-hw\hw3 (space invaders)\nyucodebase\spaceinvaders.cpp(235): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>e:\git repositories\cs3113-hw\hw3 (space invaders)\nyucodebase\spaceinvaders.cpp(238): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>e:\git repositories\cs3113-hw\hw3 (space invaders)\nyucodebase\spaceinvaders.cpp(250): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>e:\git repositories\cs3113-hw\hw3 (space invaders)\nyucodebase\spaceinvaders.cpp(256): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>e:\git repositories\cs3113-hw\hw3 (space invaders)\nyucodebase\spaceinvaders.cpp(259): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>e:\git repositories\cs3113-hw\hw3 (space invaders)\nyucodebase\spaceinvaders.cpp(262): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>e:\git repositories\cs3113-hw\hw3 (space invaders)\nyucodebase\spaceinvaders.cpp(268): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>e:\git repositories\cs3113-hw\hw3 (space invaders)\nyucodebase\spaceinvaders.cpp(271): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>e:\git repositories\cs3113-hw\hw3 (space invaders)\nyucodebase\spaceinvaders.cpp(274): warning C4305: 'argument' : truncation from 'double' to 'float'
+         Entity.cpp
+         Generating Code...
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\Git Repositories\cs3113-hw\HW3 (space invaders)\Debug\NYUCodebase.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\SDL2\lib\x86 /LIBPATH:C:\SDL2_image\lib\x86 SDL2.lib SDL2main.lib SDL2_image.lib OpenGL32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"E:\Git Repositories\cs3113-hw\HW3 (space invaders)\Debug\NYUCodebase.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\Git Repositories\cs3113-hw\HW3 (space invaders)\Debug\NYUCodebase.lib" /MACHINE:X86 Debug\Bullet.obj
+         Debug\Entity.obj
+         Debug\main.obj
+         Debug\Player.obj
+         Debug\SheetSprite.obj
+         Debug\SpaceInvaders.obj
+         NYUCodebase.vcxproj -> E:\Git Repositories\cs3113-hw\HW3 (space invaders)\Debug\NYUCodebase.exe
+     1>Done Building Project "E:\Git Repositories\cs3113-hw\HW3 (space invaders)\NYUCodebase\NYUCodebase.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:02.60
+Time Elapsed 00:00:01.37

@@ -86,139 +86,156 @@ void ClassDemoApp::FixedUpdate() {
 	}
 }
 
-//#define other stuff
-#define MAX_TIMESTEPS 6
-#define RANDOM_NUMBER ((float)rand()/(float)RAND_MAX)
-#define NUM_ENEMIES 8
-
-ClassDemoApp::ClassDemoApp() {
-	Init();
-	buildLevel();
-
-	vector<int> frames;
-	frames.insert(frames.begin(), { 80, 81 });
-
-	for (int i = 0; i < NUM_ENEMIES; i++) {
-		enemies[i].sprite = SheetSprite(spriteSheetTexture, 80);
-		enemies[i].sprite.setAnimated(true, 10.0f, frames);
-		//set width, height, x, y, acceleration_x, mass, friction_x
-		entities.push_back(&enemies[i]);
-	}
-
-	//make player
-
-	gravity_x = 0.0f;
-	gravity_y = -9.8f;
-
-	bulletIndex = 0;
-	done = false;
-	lastFrameTicks = 0.0f;	//for fixedUpdate
-
+int main() {
+	return 0;
 }
 
-bool ClassDempApp::UpdateAndRender() {
-	//float ticks, elapsed, lastFrameTicks
-	SDL_Event event;
+unsigned char levelData[LEVEL_HEIGHT][LEVEL_WIDTH];
 
-	//while pollevent stuff
-	else if (even.type == SDL_KEYDOWN) {
-		if (!event.key.repeat) {
-			switch (event.key.keysym.scanmode) {
-			case SDL_SCANCPDE_Z:
-				//jump
-				break;
-			}
-		}
+unsigned char levelData[0] = {0,20,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,4,4,4,4,4,4};
+
+void ClassDemoApp::buildLevel() {
+	memcpy(levelData, level1Data, LEVEL_HEIGHT*LEVEL_WIDTH);
+}
+
+//level1Data.h that contains the level1data
+//have an unsigned char levelData[16][22] in CLassDemoApp.h
+
+
+//put this function into Render
+void ClassDemoApp::RenderLevel() {
+	glBindTexture(GL_TEXTURE_2D, spriteSheetTexture);
+	glenable texture
+	glenable blend
+	glblendfunc
+
+	vector<float> vertexData;
+	vector<float> textCoordData;
+
+	int numVertices = 0;
+
+	for int y
+		for int x
+			if levelData[y][x] > 0
+				float u =
+				float v =
+
+				float spriteWidth = 1.0f / 16.0f * 0.999f;
+				float spriteHeight = 1.0f / 8.0f * 0.999f;
+
+				vertexData.insert(vertexData.end(), {
+					TILE_SIZE * x, -TILE_SIZE * y,
+					.....
+
+				})
+
+				txtCoordData.insert(....)
+
+				numVertices += 4;
+
+
+	glmatrixmode modelview
+	glloadidentity
+	gl translatef(...)
+
+	gldisableclientstate 
+}
+
+bool ClassDemoApp::isSolid(unsigned char tile) {
+	switch (tile) {
+	case 1:
+	case 2:
+	case 3:
+	case 20:
+		return true;
+		break;
+	default:
+		return false;
+		break;
+	}
+}
+
+float ClassDemoApp::checkPointForGridCollisionX(float x, float y) {
+	int gridX, gridY;
+	worldToTilesCoordinates(x, y, &gridX, &gridY);
+	if (gridX < 0 || gridX > 21 || gridY < 0 || gridY > 15) {
+		return 0.0f;
 	}
 
-	//const Uint8
-	if (keys[SDL_SCANCODE_RIGHT]) {
-		player.setWalkRight();
+	if (isSolid(levelData[gridX][gridY])) {
+		float yCoordinate = (gridY * TILE_SIZE) - (TILE_SIZE*8.0);
+		return - y - yCoordinate;
 	}
-	else if (keys[SDL_SCANCODE_LEFT]) {
-		player.setWalkLefts();
-	}
-	else {
-		player.setIdle();
-	}
-	if (keys[SDL_SCANCODE_X]) {
-		if (shootTimer > 0.1f) {
-			shootTimer = 0.0f;
-			shootBullet();
-		}
-	}
+	return 0.0f;
+}
 
-	shootTimer += elapsed;
+void ClassDemoApp::doLevelCollisionY(Entity *entity) {
+	//check bottom
 
-	float fixedElapsed = elapsed + timeLeftOver;
-	if (fixedElapsed > FIXED_TIMESTEP)
+	float adjust = checkPointForGridCollisionY(entity->x, entity->y - entity->height*0.5);
+	if (adjust != 0.0f) {
+		entity->y += adjust;
+		entity->velocity_y = 0.0f;
+		entity->collidedBotom = true;
+	}
+	
+	//check top
 
+	//blah blah blah
 }
 
 void ClassDemoApp::FixedUpdate() {
-	//for loop
-		entities[i].FixedUpdate();
-
-		//update collidedTop, bottom,...
-		//do Y collisions
-		for (int j = 0; j < entities.size(); j++) {
-			entities[j]->y += entities[j]->velocity_y * FIXED_TIMESTEP;
-			if (!entities[j]->isStatic && entities[j]->enableCollisions) {
-				for //blah blah balh
-			}
-		}
-		//do X collisions
-
-		for (int i = 0; i < NUM_ENEMIES; i++) {
-			if (enemies[i].collidedRight) {
-				eenemies[i].acceleration_x = -3.0f;
-				enemies[i].sprite.flipX = true;
-			}
-
-			if (enemies[i].collidedLeft) {
-				eenemies[i].acceleration_x = 3.0f;
-				enemies[i].sprite.flipX = false;
-			}
-
-			if (enemies[i].y < -3.0) {
-				enemies[i].y = 3.0f;
-				enemies[i].x = -0.3f + (RANDOM_NUMBER * 0.6f);
-				enemies[i].velocity_y = 0.0f;
-				enemies[i].velocity_x = 0.0f;
-				enemies[i].enableCollision = true;
-
-			}
-
-		}
-
-		//hit player
-		if (enemies[i].collidesWith(&player.bodyEntity()))
-			//player dies
-
-		//hit bullet
-
-		//loop static etities
-		
-
+	for entities.size
+		entities[i]->fixedupdate
+		entities[i]->collidedTop = false;
+		bottom, right, left = false;
+	
+		doLevelCollisionY
+		doLevelCollisionX
 }
 
+//for scrolling
+void CLassDemoApp::Render() {
+	glClearColor;
+	glClear;
 
-void ENtity::FixedUpdate() {
-	if (!isStatic) {
-		//velocity_x = lerp(velocity_x, 0.0f, ....);
-		//...
+	float translateX = -player.legsEntity.x;
+	float translateY = -player.legsENtity.y;
+
+	if (translateY > 0.0)
+		translateY = 0.0;
+	if (translateX > 0.0)
+		translateX = 0.0;
+	if (traslateX < -TILE_SIZE * (LEVEL_WIDTH / 2)) {
+		translateX = -TILE_SIZE * (LEVEL_WIDTH / 2);
 	}
+
+
 }
 
-void Sheetsprite::setAnimated(bool val, float fps, std::vector<int> frames) {
-	animated = val;
-	framsPerSecond = fps;
-	this->frames = frames;
+void Entity::Render() {
+	if (!visible)
+		return;
+	glPushMatrix;
+	glTransalte;
+	glrotate;
+	sprite.Draw();
+	glpopmatrx();
 }
 
-void Sheetsprite::Draw() {
-	int frameIndex = index;
-	if (animated) {
 
-	}
+//bullet
+void Bullet::Update(float elapsed) {
+	x += cos(angle * PI / 180.0f) * elapsed * speed;
+	y += sin(angle * PI / 180.0f) * elapsed * speed;
+	timeAlive += elapsed;
+}
+void Bullet::Draw() {
+	if visible
+		return;
+	glPushMatrix();
+	gltranslatef(x, y, 0.0f);
+	glrotate(angle, 0, 0, 1.0f);
+	sprite.draw();
+	glPopMatrix();
 }

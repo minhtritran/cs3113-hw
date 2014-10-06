@@ -52,7 +52,7 @@ void PlatKillas::Update(float elapsed) {
 		enemies[enemyIndex].x = 0.65f;
 		enemies[enemyIndex].width = 0.2f;
 		enemies[enemyIndex].height = 0.2f;
-		enemies[enemyIndex].acceleration_x = -3.0f;
+		enemies[enemyIndex].acceleration_x = -2.0f;
 		entities.push_back(&enemies[enemyIndex]);
 		enemyIndex++;
 		enemySpawnTimer = 0.0f;
@@ -142,11 +142,11 @@ void PlatKillas::FixedUpdate() {
 
 	for (int i = 0; i < MAX_ENEMIES; i++) {
 		if (enemies[i].collidedRight) {
-			enemies[i].acceleration_x = -3.0f;
+			enemies[i].acceleration_x = -2.0f;
 		}
 
 		if (enemies[i].collidedLeft) {
-			enemies[i].acceleration_x = 3.0f;
+			enemies[i].acceleration_x = 2.0f;
 		}
 		//enemy gets hit
 		for (int k = 0; k < MAX_BULLETS; k++) {

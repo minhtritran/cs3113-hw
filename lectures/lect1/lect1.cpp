@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 	SDL_GL_MakeCurrent(displayWindow, context);
 
 	bool done = false;
-	
+
 	SDL_Event event;
 
 	glViewport(0,0,800,600);

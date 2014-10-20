@@ -172,13 +172,12 @@ void SideScroller::Render() {
 	float translateX = -player->x;
 	float translateY = -player->y;
 
-	/*if (translateY > 0.0)
-		translateY = 0.0;
-	if (translateX > 0.0)
-		translateX = 0.0;
-	if (translateX < -TILE_SIZE * (mapWidth / 2)) {
-		translateX = -TILE_SIZE * (mapWidth / 2);
-	}*/
+	if (translateY > 1.5)
+		translateY = 1.5;
+	if (translateX > 8.0)
+		translateX = 8.0;
+	if (translateX < -8.0)
+		translateX = -8.0;
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();

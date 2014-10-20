@@ -16,6 +16,7 @@ SideScroller::SideScroller() {
 
 	brickSpriteSheetTexture = LoadTexture("sheet_4.png");
 	characterSpriteSheetTexture = LoadTexture("characters_1.png");
+	bulletSprite = SheetSprite(characterSpriteSheetTexture, 12, 8, 3);
 	buildLevel();
 
 	gunshot = Mix_LoadWAV("gunshot.wav");
@@ -431,7 +432,6 @@ void SideScroller::RenderLevel() {
 
 void SideScroller::shootBullet() {
 	Mix_PlayChannel(-1, gunshot, 0);
-	SheetSprite bulletSprite = SheetSprite(characterSpriteSheetTexture, 12, 8, 3);
 	bullets[bulletIndex].sprite = bulletSprite;
 	bullets[bulletIndex].visible = true;
 	bullets[bulletIndex].x = player->x;
@@ -475,9 +475,7 @@ float SideScroller::checkPointForGridCollisionX(float x, float y) {
 	}
 		
 	if (isSolid(levelData[gridY][gridX])) {
-		//float xCoordinate = (12 * TILE_SIZE) - (gridX * TILE_SIZE);
-		//return -abs(-x - xCoordinate);
-		return gridX*16.0f - ((x * 16.0f / TILE_SIZE) + (128.0f * 16.0f / 2.0f) - 8.0f);
+		return 0.004f;
 	}
 	return 0.0f;
 }
@@ -512,12 +510,11 @@ void SideScroller::doLevelCollisionX(Entity *entity) {
 
 	adjust = checkPointForGridCollisionX(entity->x - entity->width*0.5, entity->y);
 	if (adjust != 0.0f) {
-		entity->x -= adjust;
+		entity->x += adjust;
 		entity->velocity_x = 0.0f;
 		entity->collidedLeft = true;
 	}
 
-	//blah blah blah
 }
 
 void SideScroller::doLevelCollisionY(Entity *entity) {
@@ -531,8 +528,6 @@ void SideScroller::doLevelCollisionY(Entity *entity) {
 	}
 
 
-
-	//blah blah blah
 }
 
 float lerp(float v0, float v1, float t) {

@@ -60,6 +60,7 @@ private:
 
 	GLuint characterSpriteSheetTexture;
 	GLuint brickSpriteSheetTexture;
+	SheetSprite bulletSprite;
 
 	float gravity_x;
 	float gravity_y;

@@ -18,11 +18,21 @@ SideScroller::SideScroller() {
 	characterSpriteSheetTexture = LoadTexture("characters_1.png");
 	buildLevel();
 
+	gunshot = Mix_LoadWAV("gunshot.wav");
+	jump = Mix_LoadWAV("jump.wav");
+	music = Mix_LoadMUS("music.wav");
+	if (Mix_PlayMusic(music, -1) < 0) {
+		cout << "Error";
+	}
+	
+
 	
 	
 }
 
 SideScroller::~SideScroller() {
+
+
 	SDL_Quit();
 }
 
@@ -31,6 +41,7 @@ void SideScroller::Init() {
 	displayWindow = SDL_CreateWindow("My Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_OPENGL);
 	SDL_GLContext context = SDL_GL_CreateContext(displayWindow);
 	SDL_GL_MakeCurrent(displayWindow, context);
+	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
 
 	glViewport(0, 0, 800, 600);
 	glMatrixMode(GL_PROJECTION);
@@ -111,8 +122,9 @@ void SideScroller::FixedUpdate() {
 					}
 				}
 			}
+			
 		}
-		
+		doLevelCollisionY(entities[i]);
 		entities[i]->x += entities[i]->velocity_x * FIXED_TIMESTEP;
 		//do X collisions
 		if (!entities[i]->isStatic) {
@@ -130,6 +142,7 @@ void SideScroller::FixedUpdate() {
 				}
 			}
 		}
+		doLevelCollisionX(entities[i]);
 	}
 
 
@@ -149,16 +162,28 @@ void SideScroller::FixedUpdate() {
 				enemies[i].x = 0.0f;
 			}
 		}
-		//player loses
-		/*if (enemies[i].x < -1.33 || enemies[i].x > 1.33) {
-			player->height -= 0.01f; //I did this it looks funny and because I didn't want to make a game over state
-		}*/
 			
 	}
 }
 
 void SideScroller::Render() {
 	glClear(GL_COLOR_BUFFER_BIT);
+	float translateX = -player->x;
+	float translateY = -player->y;
+
+	/*if (translateY > 0.0)
+		translateY = 0.0;
+	if (translateX > 0.0)
+		translateX = 0.0;
+	if (translateX < -TILE_SIZE * (mapWidth / 2)) {
+		translateX = -TILE_SIZE * (mapWidth / 2);
+	}*/
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glTranslatef(translateX, translateY, 0.0f);
+
+
 
 	for (size_t i = 0; i < entities.size(); i++) {
 		entities[i]->Render();
@@ -192,6 +217,7 @@ bool SideScroller::UpdateAndRender() {
 	const Uint8 *keys = SDL_GetKeyboardState(NULL);
 	if (keys[SDL_SCANCODE_W]) {
 		if (!player->isJumping) {
+			Mix_PlayChannel(-1, jump, 0);
 			player->jump();
 		}
 		
@@ -298,7 +324,7 @@ bool SideScroller::readLayerData(ifstream& stream) {
 					getline(lineStream, tile, ',');
 					unsigned char val = (unsigned char)atoi(tile.c_str());
 					if (val > 0) {
-						levelData[y][x] = val - 1;
+						levelData[y][x] = val;
 					}
 					else {
 						levelData[y][x] = 0;
@@ -328,8 +354,8 @@ bool SideScroller::readEntityData(ifstream& stream) {
 			getline(lineStream, xPosition, ',');
 			getline(lineStream, yPosition, ',');
 			
-			float placeX = atoi(xPosition.c_str()) / 16 * 16;
-			float placeY = atoi(yPosition.c_str()) / 16 * -16;
+			float placeX = (atoi(xPosition.c_str()) + 8.0f - 128.0f * 16.0f / 2.0f) / 16.0f * TILE_SIZE;
+			float placeY = (atoi(yPosition.c_str()) - 8.0f - 32.0f * 16.0f / 2.0f) / 16.0f * -TILE_SIZE;
 			
 			placeEntity(type, placeX, placeY);
 		}
@@ -394,15 +420,17 @@ void SideScroller::RenderLevel() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	glPushMatrix();
 	glTranslatef(-TILE_SIZE* mapWidth / 2, TILE_SIZE* mapHeight / 2, 0.0f);
 
 	glDrawArrays(GL_QUADS, 0, numVertices);
 	glDisable(GL_TEXTURE_2D);
+	glPopMatrix();
 	
 }
 
 void SideScroller::shootBullet() {
+	Mix_PlayChannel(-1, gunshot, 0);
 	SheetSprite bulletSprite = SheetSprite(characterSpriteSheetTexture, 12, 8, 3);
 	bullets[bulletIndex].sprite = bulletSprite;
 	bullets[bulletIndex].visible = true;
@@ -418,6 +446,93 @@ void SideScroller::shootBullet() {
 		bulletIndex = 0;
 	}
 	shootTimer = 0;
+}
+
+bool SideScroller::isSolid(unsigned char tile) {
+	switch (tile) {
+	case 9:
+		return true;
+		break;
+	case 11:
+		return true;
+		break;
+	default:
+		return false;
+		break;
+	}
+}
+
+void SideScroller::worldToTileCoordinates(float worldX, float worldY, int*gridX, int*gridY) {
+	*gridX = (int)(((worldX * 16.0f) / TILE_SIZE) + (128.0f * 16.0f / 2.0f)) / 16.0f;
+	*gridY = (int)(((worldY * 16.0f) / -TILE_SIZE) + (32.0f * 16.0f / 2.0f)) / 16.0f;
+}
+
+float SideScroller::checkPointForGridCollisionX(float x, float y) {
+	int gridX, gridY;
+	worldToTileCoordinates(x, y, &gridX, &gridY);
+	if (gridX < 0 || gridX > 128 || gridY < 0 || gridY > 32) {
+		return 0.0f;
+	}
+		
+	if (isSolid(levelData[gridY][gridX])) {
+		//float xCoordinate = (12 * TILE_SIZE) - (gridX * TILE_SIZE);
+		//return -abs(-x - xCoordinate);
+		return gridX*16.0f - ((x * 16.0f / TILE_SIZE) + (128.0f * 16.0f / 2.0f) - 8.0f);
+	}
+	return 0.0f;
+}
+
+float SideScroller::checkPointForGridCollisionY(float x, float y) {
+	int gridX, gridY;
+	worldToTileCoordinates(x, y, &gridX, &gridY);
+	if (gridX < 0 || gridX > 128 || gridY < 0 || gridY > 32) {
+		return 0.0f;
+	}
+
+	if (isSolid(levelData[gridY][gridX])) {
+		
+		float yCoordinate = (gridY * TILE_SIZE) - (TILE_SIZE*16.0);
+		return -y - yCoordinate;
+		
+	}
+	return 0.0f;
+}
+
+void SideScroller::doLevelCollisionX(Entity *entity) {
+	//check right
+
+	float adjust = checkPointForGridCollisionX(entity->x + entity->width*0.5, entity->y);
+	if (adjust != 0.0f) {
+		entity->x -= adjust;
+		entity->velocity_x = 0.0f;
+		entity->collidedRight = true;
+	}
+
+	//check left
+
+	adjust = checkPointForGridCollisionX(entity->x - entity->width*0.5, entity->y);
+	if (adjust != 0.0f) {
+		entity->x -= adjust;
+		entity->velocity_x = 0.0f;
+		entity->collidedLeft = true;
+	}
+
+	//blah blah blah
+}
+
+void SideScroller::doLevelCollisionY(Entity *entity) {
+	//check bottom
+
+	float adjust = checkPointForGridCollisionY(entity->x, entity->y - entity->height*0.5);
+	if (adjust != 0.0f) {
+		entity->y += adjust;
+		entity->velocity_y = 0.0f;
+		entity->collidedBottom = true;
+	}
+
+
+
+	//blah blah blah
 }
 
 float lerp(float v0, float v1, float t) {

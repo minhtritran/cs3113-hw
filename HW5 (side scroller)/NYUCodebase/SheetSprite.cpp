@@ -11,7 +11,7 @@ void SheetSprite::Draw(float width, float height, float x, float y, float rotati
 
 	glMatrixMode(GL_MODELVIEW);
 
-	glLoadIdentity();
+	glPushMatrix();
 	glTranslatef(x, y, 0.0);
 	glRotatef(rotation, 0.0, 0.0, 1.0);
 
@@ -33,6 +33,7 @@ void SheetSprite::Draw(float width, float height, float x, float y, float rotati
 
 	glDrawArrays(GL_QUADS, 0, 4);
 	glDisable(GL_TEXTURE_2D);
+	glPopMatrix();
 }
 
 GLuint LoadTexture(const char *image_path) {

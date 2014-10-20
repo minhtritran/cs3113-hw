@@ -3,6 +3,7 @@
 #include <SDL.h>
 #include <SDL_opengl.h>
 #include <SDL_image.h>
+#include <SDL_mixer.h>
 #include <vector>
 #include <math.h>
 #include <string>
@@ -43,6 +44,12 @@ public:
 	void placeEntity(string& type, float placeX, float placeY);
 	void RenderLevel();
 	void shootBullet();
+	bool isSolid(unsigned char tile);
+	void worldToTileCoordinates(float worldX, float worldY, int* gridX, int* gridY);
+	float SideScroller::checkPointForGridCollisionX(float x, float y);
+	float SideScroller::checkPointForGridCollisionY(float x, float y);
+	void SideScroller::doLevelCollisionX(Entity* entity);
+	void SideScroller::doLevelCollisionY(Entity* entity);
 	
 
 private:
@@ -76,6 +83,10 @@ private:
 
 	float shootTimer;
 	float enemySpawnTimer;
+
+	Mix_Chunk* gunshot;
+	Mix_Chunk* jump;
+	Mix_Music* music;
 
 };
 

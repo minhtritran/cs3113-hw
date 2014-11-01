@@ -65,7 +65,6 @@ private:
 	float enemySpawnTimer;
 
 	Mix_Chunk* gunshot;
-	Mix_Chunk* jump;
 	Mix_Music* music;
 
 };

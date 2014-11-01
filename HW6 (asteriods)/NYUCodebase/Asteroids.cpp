@@ -40,7 +40,6 @@ Asteroids::Asteroids() {
 
 
 	gunshot = Mix_LoadWAV("gunshot.wav");
-	jump = Mix_LoadWAV("jump.wav");
 	music = Mix_LoadMUS("music.wav");
 	if (Mix_PlayMusic(music, -1) < 0) {
 		cout << "Error";

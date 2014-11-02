@@ -2,7 +2,7 @@
 
 Asteroids::Asteroids() {
 	Init();
-	
+	srand(time(NULL));
 	done = false;
 	lastFrameTicks = 0.0f;
 	timeLeftOver = 0.0f;
@@ -28,15 +28,20 @@ Asteroids::Asteroids() {
 	entities.push_back(player);
 
 	SheetSprite asteroidSprite = SheetSprite(spriteSheetTexture, 224.0f / 1024.0f, 664.0f / 1024.0f, 101.0f / 1024.0f, 84.0f / 1024.0f);
-	Entity* asteroid = new Entity();
-	asteroid->sprite = asteroidSprite;
-	asteroid->scale_x = 1.2f;
-	asteroid->scale_y = 1.2f;
-	asteroid->x = 1.0f;
-	asteroid->y = 0.0f;
-	asteroid->rotation = 45.0f;
-	asteroid->velocity_x = -0.2f;
-	entities.push_back(asteroid);
+	for (int i = 0; i < 20; i++) {
+		Entity* asteroid = new Entity();
+		asteroid->sprite = asteroidSprite;
+		float scale = genRandomNumber(0.7f, 1.5f);
+		asteroid->scale_x = scale;
+		asteroid->scale_y = scale;
+		asteroid->x = genRandomNumber(-1.33f, 1.33f);
+		asteroid->y = genRandomNumber(-1.0f, 1.0f);
+		asteroid->rotation = genRandomNumber(-90.0f, 90.0f);
+		asteroid->velocity_x = genRandomNumber(-0.15f, 0.15f);
+		asteroid->velocity_y = genRandomNumber(-0.15f, 0.15f);
+		entities.push_back(asteroid);
+	}
+	
 
 
 	gunshot = Mix_LoadWAV("gunshot.wav");
@@ -83,22 +88,6 @@ void Asteroids::FixedUpdate() {
 	for (size_t i = 0; i < entities.size(); i++) {
 		entities[i]->FixedUpdate();
 
-		if (entities[i]->collidedBottom) {
-			entities[i]->isJumping = false;
-			entities[i]->velocity_y = 0.0f;
-		}
-		if (entities[i]->collidedTop)
-			entities[i]->velocity_y = 0.0f;
-		if (entities[i]->collidedLeft)
-			entities[i]->velocity_x = 0.0f;
-		if (entities[i]->collidedRight)
-			entities[i]->velocity_x = 0.0f;
-
-		entities[i]->collidedBottom = false;
-		entities[i]->collidedTop = false;
-		entities[i]->collidedLeft = false;
-		entities[i]->collidedRight = false;
-
 		if (!entities[i]->isStatic) {
 			entities[i]->velocity_x += gravity_x * FIXED_TIMESTEP;
 			entities[i]->velocity_y += gravity_y * FIXED_TIMESTEP;
@@ -110,8 +99,6 @@ void Asteroids::FixedUpdate() {
 		entities[i]->velocity_x += entities[i]->acceleration_x * FIXED_TIMESTEP;
 		entities[i]->velocity_y += entities[i]->acceleration_y * FIXED_TIMESTEP;
 
-	
-
 		if (!entities[i]->isStatic) {
 			for (size_t j = 0; j < entities.size(); j++) {
 				if (checkCollision(entities[i], entities[j])) {
@@ -119,11 +106,11 @@ void Asteroids::FixedUpdate() {
 					float distLength = distance.length();
 					distance.normalize();
 
-					entities[i]->x += distance.x * 0.0001f / pow(distLength, 3);
-					entities[i]->y += distance.y * 0.0001f / pow(distLength, 3);
+					entities[i]->x += distance.x * 0.0001f / pow(distLength, 2);
+					entities[i]->y += distance.y * 0.0001f / pow(distLength, 2);
 
-					entities[j]->x -= distance.x * 0.0001f / pow(distLength, 3);
-					entities[j]->y -= distance.y * 0.0001f / pow(distLength, 3);
+					entities[j]->x -= distance.x * 0.0001f / pow(distLength, 2);
+					entities[j]->y -= distance.y * 0.0001f / pow(distLength, 2);
 				}
 			}
 			
@@ -133,6 +120,18 @@ void Asteroids::FixedUpdate() {
 		entities[i]->x += entities[i]->velocity_x * sin(entities[i]->rotation) * FIXED_TIMESTEP;
 		
 
+	}
+
+	for (int i = 1; i < entities.size(); i++) {
+		//enemy gets hit
+		for (int k = 0; k < MAX_BULLETS; k++) {
+			if (bullets[k].visible && checkCollision(entities[i], &bullets[k]) ) {
+				bullets[k].visible = false;
+				delete entities[i];
+				entities.erase(entities.begin()+i);
+				break;
+			}
+		}
 	}
 }
 
@@ -292,4 +291,8 @@ void Asteroids::shootBullet() {
 
 float lerp(float v0, float v1, float t) {
 	return (1.0f - t)*v0 + t*v1;
+}
+
+float genRandomNumber(float low, float high) {
+	return low + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (high - low)));
 }

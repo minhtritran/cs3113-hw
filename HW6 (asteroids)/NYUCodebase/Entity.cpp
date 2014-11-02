@@ -25,7 +25,12 @@ Entity::Entity() {
 Entity::~Entity() {}
 
 void Entity::Update(float elapsed) {
-		
+	if (x < -1.4f || x >1.4f)
+		velocity_x *= -1;
+	if (y < -1.0f || y > 1.0f)
+		velocity_y *= -1;
+
+
 }
 
 void Entity::Render() {

@@ -3,7 +3,14 @@
 Player::Player() {}
 
 void Player::Update(float elapsed) {
-	
+	if (x < -1.33f)
+		x = -1.33f;
+	else if (x > 1.33f)
+		x = 1.33f;
+	if (y < -1.0f)
+		y = -1.0f;
+	else if (y > 1.0f)
+		y = 1.0f;
 }
 
 void Player::Render() {

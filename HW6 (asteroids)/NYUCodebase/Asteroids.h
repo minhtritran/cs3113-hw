@@ -11,6 +11,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <time.h>
 #include "Bullet.h"
 #include "Entity.h"
 #include "Player.h"
@@ -70,3 +71,4 @@ private:
 };
 
 float lerp(float v0, float v1, float t);
+float genRandomNumber(float low, float high);

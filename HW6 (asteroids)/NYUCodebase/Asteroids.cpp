@@ -127,9 +127,18 @@ void Asteroids::FixedUpdate() {
 		for (int k = 0; k < MAX_BULLETS; k++) {
 			if (bullets[k].visible && checkCollision(entities[i], &bullets[k]) ) {
 				bullets[k].visible = false;
-				delete entities[i];
-				entities.erase(entities.begin()+i);
-				break;
+				if (entities[i]->scale_x < 1.0f) {
+					delete entities[i];
+					entities.erase(entities.begin() + i);
+					break;
+				}
+				else {
+					entities[i]->scale_x = entities[i]->scale_x * 0.67;
+					entities[i]->scale_y = entities[i]->scale_y * 0.67;
+					entities[i]->rotation = genRandomNumber(-90.0f, 90.0f);
+				}
+					
+			
 			}
 		}
 	}

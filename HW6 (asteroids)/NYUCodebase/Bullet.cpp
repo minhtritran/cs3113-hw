@@ -5,8 +5,8 @@ Bullet::Bullet() {
 	x = -2.0f;
 	y = -2.0f;
 	
-	scale_x = 0.2f;
-	scale_y = 0.2f;
+	scale_x = 0.35f;
+	scale_y = 0.35f;
 
 	velocity_x = 3.0f;
 	velocity_y = 3.0f;

@@ -15,12 +15,14 @@
 #include "Bullet.h"
 #include "Entity.h"
 #include "Player.h"
+#include "ParticleEmitter.h"
 
 #define FIXED_TIMESTEP 0.0166666f
 #define MAX_TIMESTEPS 6
 #define MAX_BULLETS 30
 #define MAX_BRICKS 200
 #define MAX_ENEMIES 8
+#define PI 3.141592653589793238
 
 using namespace std;
 
@@ -31,7 +33,7 @@ public:
 
 	void Init();
 	void Update(float elapsed);
-	void FixedUpdate();
+	void FixedUpdate(float fixedElapsed);
 	void Render();
 	bool UpdateAndRender();
 
@@ -68,7 +70,12 @@ private:
 	Mix_Chunk* gunshot;
 	Mix_Music* music;
 
-};
+	float playerStartAnimationTime;
 
+	vector<ParticleEmitter> particleEmitters;
+};
+float mapValue(float value, float srcMin, float srcMax, float dstMin, float dstMax);
 float lerp(float v0, float v1, float t);
+float easeIn(float from, float to, float time);
+float easeOutElastic(float from, float to, float time);
 float genRandomNumber(float low, float high);

@@ -41,6 +41,13 @@ Asteroids::Asteroids() {
 		asteroid->velocity_y = genRandomNumber(-0.15f, 0.15f);
 		entities.push_back(asteroid);
 	}
+
+	ParticleEmitter demoParticles(300);
+	demoParticles.maxLifetime = 1.0f;
+	demoParticles.position = Vector(0.0f, 0.5f, 0.0f);
+	demoParticles.velocity = Vector(0.8f, 0.5f, 0.0f);
+	demoParticles.velocityDeviation = Vector(0.5f, 1.5f, 0.0f);
+	particleEmitters.push_back(demoParticles);
 	
 
 
@@ -71,6 +78,13 @@ void Asteroids::Init() {
 }
 
 void Asteroids::Update(float elapsed) {
+	playerStartAnimationTime += elapsed;
+	if (playerStartAnimationTime < 1.0f) {
+		float animationAValue = mapValue(playerStartAnimationTime, 0.4f, 2.0f, 0.0f, 1.0f);
+		player->scale_x = easeOutElastic(0.0, 1.0, animationAValue);
+		player->scale_y = easeOutElastic(0.0, 1.0, animationAValue);
+	}
+
 	for (size_t i = 0; i < entities.size(); i++) {
 		entities[i]->Update(elapsed);
 	}
@@ -79,19 +93,30 @@ void Asteroids::Update(float elapsed) {
 		bullets[i].Update(elapsed);
 	}
 
+	for (size_t i = 0; i < particleEmitters.size(); i++) {
+		particleEmitters[i].Update(elapsed);
+	}
+
 	shootTimer += elapsed;
 	enemySpawnTimer += elapsed;
 }
 
-void Asteroids::FixedUpdate() {
+void Asteroids::FixedUpdate(float fixedElapsed) {
+
+	player->scale_y = mapValue(fabs(player->velocity_y), 0.0, 5.0, 1.0, 1.6);
+	player->scale_x = mapValue(fabs(player->velocity_y), 5.0, 0.0, 0.8, 1.0);
 
 	for (size_t i = 0; i < entities.size(); i++) {
 		entities[i]->FixedUpdate();
+
+		
+		
 
 		if (!entities[i]->isStatic) {
 			entities[i]->velocity_x += gravity_x * FIXED_TIMESTEP;
 			entities[i]->velocity_y += gravity_y * FIXED_TIMESTEP;
 		}
+
 
 		entities[i]->velocity_x = lerp(entities[i]->velocity_x, 0.0f, FIXED_TIMESTEP * entities[i]->friction_x);
 		entities[i]->velocity_y = lerp(entities[i]->velocity_y, 0.0f, FIXED_TIMESTEP * entities[i]->friction_y);
@@ -127,6 +152,15 @@ void Asteroids::FixedUpdate() {
 		for (int k = 0; k < MAX_BULLETS; k++) {
 			if (bullets[k].visible && checkCollision(entities[i], &bullets[k]) ) {
 				bullets[k].visible = false;
+
+				ParticleEmitter demoParticles(300);
+				demoParticles.maxLifetime = 1.0f;
+				demoParticles.position = Vector(entities[i]->x, entities[i]->y, 0.0f);
+				demoParticles.velocity = Vector(-cos(player->rotation), sin(player->rotation), 0.0f);
+				demoParticles.velocityDeviation = Vector(0.5f, 1.5f, 0.0f);
+				particleEmitters.push_back(demoParticles);
+				particleEmitters.back().trigger();
+
 				if (entities[i]->scale_x < 1.0f) {
 					delete entities[i];
 					entities.erase(entities.begin() + i);
@@ -153,6 +187,10 @@ void Asteroids::Render() {
 
 	for (size_t i = 0; i < MAX_BULLETS; i++) {
 		bullets[i].Render();
+	}
+
+	for (size_t i = 0; i < particleEmitters.size(); i++) {
+		particleEmitters[i].Render();
 	}
 
 	SDL_GL_SwapWindow(displayWindow);
@@ -203,7 +241,7 @@ bool Asteroids::UpdateAndRender() {
 	}
 	while (fixedElapsed >= FIXED_TIMESTEP) {
 		fixedElapsed -= FIXED_TIMESTEP;
-		FixedUpdate();
+		FixedUpdate(fixedElapsed);
 	}
 	timeLeftOver = fixedElapsed;
 
@@ -298,8 +336,31 @@ void Asteroids::shootBullet() {
 	shootTimer = 0;
 }
 
+float mapValue(float value, float srcMin, float srcMax, float dstMin, float dstMax) {
+	float retVal = dstMin + ((value - srcMin) / (srcMax - srcMin) * (dstMax - dstMin));
+	if (retVal < dstMin) {
+		retVal = dstMin;
+	}
+	if (retVal > dstMax) {
+		retVal = dstMax;
+	}
+	return retVal;
+}
+
 float lerp(float v0, float v1, float t) {
 	return (1.0f - t)*v0 + t*v1;
+}
+
+float easeIn(float from, float to, float time) {
+	float tVal = time*time*time*time*time;
+	return(1.0f - tVal)*from + tVal*to;
+}
+
+float easeOutElastic(float from, float to, float time) {
+	float p = 0.3f;
+	float s = p / 4.0f;
+	float diff = (to - from);
+	return from + diff + (diff*pow(2.0f, -10.0f*time) * sin((time - s)*(2 * PI) / p));
 }
 
 float genRandomNumber(float low, float high) {

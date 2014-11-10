@@ -156,7 +156,7 @@ void Asteroids::FixedUpdate(float fixedElapsed) {
 				ParticleEmitter demoParticles(300);
 				demoParticles.maxLifetime = 1.0f;
 				demoParticles.position = Vector(entities[i]->x, entities[i]->y, 0.0f);
-				demoParticles.velocity = Vector(-cos(player->rotation), sin(player->rotation), 0.0f);
+				demoParticles.velocity = Vector(sin(player->rotation)*bullets[k].velocity_x/2, -cos(player->rotation)*bullets[k].velocity_y/2, 0.0f);
 				demoParticles.velocityDeviation = Vector(0.5f, 1.5f, 0.0f);
 				particleEmitters.push_back(demoParticles);
 				particleEmitters.back().trigger();

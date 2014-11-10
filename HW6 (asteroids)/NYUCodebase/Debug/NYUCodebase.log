@@ -1,14 +1,17 @@
-﻿Build started 11/9/2014 3:39:21 PM.
-     1>Project "E:\Git Repositories\cs3113-hw\HW6 (asteroids)\NYUCodebase\NYUCodebase.vcxproj" on node 2 (Build target(s)).
+﻿Build started 11/10/2014 10:42:51 AM.
+     1>Project "C:\cs3113-hw\HW6 (asteroids)\NYUCodebase\NYUCodebase.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IC:\SDL2_mixer\include /IC:\SDL2\include /IC:\SDL2_image\include /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt ParticleEmitter.cpp
-         ParticleEmitter.cpp
-     1>e:\git repositories\cs3113-hw\hw6 (asteroids)\nyucodebase\particleemitter.cpp(7): warning C4018: '<' : signed/unsigned mismatch
-     1>e:\git repositories\cs3113-hw\hw6 (asteroids)\nyucodebase\particleemitter.cpp(19): warning C4018: '<' : signed/unsigned mismatch
-     1>e:\git repositories\cs3113-hw\hw6 (asteroids)\nyucodebase\particleemitter.cpp(30): warning C4018: '<' : signed/unsigned mismatch
-     1>e:\git repositories\cs3113-hw\hw6 (asteroids)\nyucodebase\particleemitter.cpp(40): warning C4018: '<' : signed/unsigned mismatch
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IC:\SDL2_mixer\include /IC:\SDL2\include /IC:\SDL2_image\include /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Asteroids.cpp
+         Asteroids.cpp
+     1>c:\cs3113-hw\hw6 (asteroids)\nyucodebase\asteroids.cpp(5): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
+     1>c:\cs3113-hw\hw6 (asteroids)\nyucodebase\asteroids.cpp(106): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\cs3113-hw\hw6 (asteroids)\nyucodebase\asteroids.cpp(107): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\cs3113-hw\hw6 (asteroids)\nyucodebase\asteroids.cpp(150): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\cs3113-hw\hw6 (asteroids)\nyucodebase\asteroids.cpp(170): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\cs3113-hw\hw6 (asteroids)\nyucodebase\asteroids.cpp(171): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>c:\cs3113-hw\hw6 (asteroids)\nyucodebase\asteroids.cpp(363): warning C4244: 'return' : conversion from 'double' to 'float', possible loss of data
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\Git Repositories\cs3113-hw\HW6 (asteroids)\Debug\NYUCodebase.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\SDL2\lib\x86 /LIBPATH:C:\SDL2_image\lib\x86 /LIBPATH:C:\SDL2_mixer\lib\x86 SDL2.lib SDL2main.lib SDL2_image.lib SDL2_mixer.lib OpenGL32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"E:\Git Repositories\cs3113-hw\HW6 (asteroids)\Debug\NYUCodebase.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\Git Repositories\cs3113-hw\HW6 (asteroids)\Debug\NYUCodebase.lib" /MACHINE:X86 Debug\Bullet.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\cs3113-hw\HW6 (asteroids)\Debug\NYUCodebase.exe" /INCREMENTAL /NOLOGO /LIBPATH:C:\SDL2\lib\x86 /LIBPATH:C:\SDL2_image\lib\x86 /LIBPATH:C:\SDL2_mixer\lib\x86 SDL2.lib SDL2main.lib SDL2_image.lib SDL2_mixer.lib OpenGL32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\cs3113-hw\HW6 (asteroids)\Debug\NYUCodebase.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\cs3113-hw\HW6 (asteroids)\Debug\NYUCodebase.lib" /MACHINE:X86 Debug\Bullet.obj
          Debug\Entity.obj
          Debug\main.obj
          Debug\Matrix.obj
@@ -18,9 +21,9 @@
          Debug\SheetSprite.obj
          Debug\Asteroids.obj
          Debug\Vector.obj
-         NYUCodebase.vcxproj -> E:\Git Repositories\cs3113-hw\HW6 (asteroids)\Debug\NYUCodebase.exe
-     1>Done Building Project "E:\Git Repositories\cs3113-hw\HW6 (asteroids)\NYUCodebase\NYUCodebase.vcxproj" (Build target(s)).
+         NYUCodebase.vcxproj -> C:\cs3113-hw\HW6 (asteroids)\Debug\NYUCodebase.exe
+     1>Done Building Project "C:\cs3113-hw\HW6 (asteroids)\NYUCodebase\NYUCodebase.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.68
+Time Elapsed 00:00:01.23
